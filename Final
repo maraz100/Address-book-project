@@ -1,0 +1,539 @@
+import tkinter as tk
+from tkinter import *
+import tkinter.messagebox
+
+global FullNameList
+FullNameList= []
+contindex = 0
+global FullName
+FullNameListFunc = [] 
+FullNameFunc = [] 
+global ContactInfoFunc
+ContactInfoFunc = []
+contindex = 0
+global ind
+ind = 0
+global ran
+ran = False
+global editmode
+editmode = False
+global zipped
+zipped = []
+global dscOrder
+dscOrder = False
+ascOrder = False
+
+
+font1=("Segoe Script",22,"bold")
+font2=("Estrangelo Edessa",20)
+font3=("Estrangelo Edessa",15)
+font4=("Estrangelo Edessa",11)
+font5=("Estrangelo Edessa",20)
+
+def page1():
+    
+    def ContIndexGetFunc():
+        contindex = (ContactListBox.curselection()) 
+        global ind
+        ind = contindex[0]    
+    
+    def ascsortfunc(): 
+        global ascOrder
+        ascOrder = True
+        
+             
+    
+        zipped = list(zip(FullNameList, ContactInfoFunc)) 
+        global sortedzipped
+        sortedzipped =  sorted(zipped)
+        ContactListBox.delete(0,END)
+        ind1 = 0
+        for entries in sortedzipped:
+           
+            ContactListBox.insert(END,(sortedzipped[ind1][1].FullName))
+            ind1 += 1
+    def dscsortfunc(): 
+        global dscOrder
+        dscOrder = True
+               
+        zipped = list(zip(FullNameList, ContactInfoFunc)) 
+        global sortedzipped
+        sortedzipped =  sorted(zipped, reverse = True)
+        ContactListBox.delete(0,END)
+        ind1 = 0
+        for entries in sortedzipped:
+            ContactListBox.insert(END,(sortedzipped[ind1][1].FullName))
+            ind1 += 1        
+    
+    
+    
+    
+   
+        
+            
+    
+    def ViewEntry(self):
+        ContIndexGetFunc()
+        p1.destroy() 
+        page3()     
+   
+    
+    
+    
+   
+    p1= Tk()
+    p1.resizable(False,False)
+    p1.configure(bg="burlywood3")
+    def page2open():
+        p1.destroy() 
+        global ascOrder
+        ascOrder = False
+        global dscOrder
+        dscOrder = False
+        page2()
+    
+             
+    p1.title("Contacts")
+
+    
+    #Define widgets
+    ContactListBox = Listbox(p1, selectmode=tk.SINGLE,font=font3)
+    ContactListBox.grid(column=0,row= 18, rowspan = 2 )
+    ContactListBox.grid(sticky="news", columnspan=5,padx=5 )
+    ContactListBox.bind('<Double-1>', ViewEntry)
+   
+    label1 = Label(p1, text="Address Book",bg="burlywood3",font=font1)
+    label2 = Label(p1, text="Add contacts",bg="burlywood3",font=font2)
+    label3 = Label(p1, text="Filter",bg="burlywood3",font=font2)
+   
+   
+    
+    BaseLogoImage = PhotoImage(file = "logo.png")
+    ResizedLogoImage = BaseLogoImage.subsample(15,15)
+    LogoImageLabel = Label(p1,image = ResizedLogoImage,borderwidth=0)  
+    LogoImageLabel.grid(column=1,row=0)
+    
+    BaseFilterImage = PhotoImage(file = "filt.png")
+    ResizedFilterImage = BaseFilterImage.subsample(20,20)
+    FilterImageLabel = Label(p1,image = ResizedFilterImage,borderwidth=0)  
+    FilterImageLabel.grid(column=1,row=2)    
+   
+ 
+    
+    asc = Button(text="A-Z",bg="burlywood1",font=font2, command = ascsortfunc)
+    dsc = Button(text="Z-A",bg="burlywood1",font=font2, command = dscsortfunc )
+    add = Button(text=" + ", command = page2open,bg="burlywood1",font=font2)
+    close = Button(text="Quit",command=p1.destroy,bg="burlywood1",font=font2) 
+    frame = Frame(bg="#aaa")
+    EmptyLabel = Label(bg = "burlywood3")
+   
+    
+    
+    #delbut = Button(text = "Delete", command = DelEntry,bg="burlywood1",font=font2)
+    #Position widgets
+    label1.grid(column=0,row=0, )
+    label2.grid(column=0,row=1,sticky="nws")
+    label3.grid(column=0,row=2,)
+   
+    
+    
+    asc.grid(row=2, column=2, sticky="nes" )
+    dsc.grid(row=2, column=3, sticky="nws" )
+    add.grid(row=1, column=1, sticky="nes", pady=10,padx=10)
+    
+    close.grid(column=3,row=0, sticky="news",columnspan=2)   
+    frame.grid(sticky="news", columnspan=5)
+    EmptyLabel.grid(column=3, sticky="news", )
+    p1.rowconfigure(0, weight=5)
+    p1.columnconfigure(0, weight=5)
+   
+    
+    #delbut.grid(column=3,  sticky="news", )
+    if FullNameList == []:
+        pass
+    else:
+        if ascOrder or dscOrder == True:
+            
+            print("test")
+            loopnum = 0
+            for i in sortedzipped:
+                print((sortedzipped[loopnum][1].FullName))
+                ContactListBox.insert(END,(sortedzipped[loopnum][1].FullName))
+                loopnum += 1
+                
+        else:
+            ind = 0
+            for i in FullNameList:
+                ContactListBox.insert(END,str(FullNameList[ind]))
+                ind += 1  
+
+
+           
+    p1.mainloop()
+
+    
+def page2():    
+    def DelEntry():
+        
+        a = tkinter.messagebox.askquestion(title="Delete Contact", message="Are you sure you want to delete this contact?")
+        if a == "yes":
+            del FullNameList[ind]
+            del ContactInfoFunc[ind]
+        
+        openpage1()     
+   
+    def openpage1():
+        p2.destroy()
+        global editmode
+        editmode = False
+        page1()        
+    def getinfo():
+        class ContactInfoInputClass():
+            def __init__(self, ContFName, ContLName, ContAddress, ContPhoneNumber, ContEmail, FullName):
+                self.ContFName = ContFName
+                self.ContLName = ContLName
+                
+                self.ContAddress = ContAddress
+                self.ContPhoneNumber =  ContPhoneNumber
+                self.ContEmail = ContEmail
+                self.FullName = FullName
+                global PassFullName
+                PassFullName = FullName
+                
+        global ContactInfo
+        
+        ContactInfo = ContactInfoInputClass(wfname_entry.get(),wlname_entry.get(), waddress_entry.get(),wnumber_entry.get(),wemail_entry.get(),(wfname_entry.get() + " " + wlname_entry.get()))
+        
+    def ClearEntries():
+        wfname_entry.delete(0,END)
+        wlname_entry.delete(0,END)
+        wnumber_entry.delete(0,END)
+        waddress_entry.delete(0,END)
+        wemail_entry.delete(0,END)
+              
+    
+    def normalsave():
+        getinfo()
+        a = str(wfname_entry.get())
+        query = (a.isalpha())
+        if query == True:
+            b = len(a)
+            if b < 21:
+                a = str(wlname_entry.get())
+                query = (a.isalpha())
+                if query == True:
+                    b = len(a)    
+                    if b < 21:    
+                        a = str(wnumber_entry.get())
+                        query = (a.isnumeric())
+                        if query == True:
+                            query = len(a)
+                            if query == 10 or query == 11:
+                                a = str(wemail_entry.get())
+                                query = (a.count("@"))
+                                if query == 1:
+                                        global FullNameList
+                                        FullNameList = FullNameListFunc
+                                        FullNameListFunc.append(PassFullName) 
+                                        ContactInfoFunc.append(ContactInfo)  
+                                        openpage1()
+                                        
+                                else:
+                                    tkinter.messagebox.showerror(title = "Input Error", message =("The email address must have 1 @ symbol."))
+                                    
+                            else: 
+                                tkinter.messagebox.showerror(title = "Input Error", message =("Phone number must have a length of 10 or 11 digits."))
+                        else:
+                            tkinter.messagebox.showerror(title = "Input Error", message =("Phone number entry can only contain numbers."))  
+                    else:
+                        tkinter.messagebox.showerror(title = "Input Error", message =("The character limit is 20 letters"))                            
+                else:
+                    tkinter.messagebox.showerror(title = "Input Error", message =("Last name entry can only contain letters.")) 
+            else:
+                tkinter.messagebox.showerror(title = "Input Error", message =("The character limit is 20 letters"))
+                        
+        else:
+            tkinter.messagebox.showerror(title = "Input Error", message =("First name entry can only contain letters."))
+                   
+        
+        
+    
+    
+    
+    
+    
+    def SaveEditFunc():    
+        getinfo()
+        FullNameList = FullNameListFunc
+        FullNameList[ind] = PassFullName
+        ContactInfoFunc[ind] = (ContactInfo)
+        openpage1()
+    #Creates second page
+    p2 = Tk()
+    p2.resizable(False,False)
+    
+    p2.title("Add contacts")
+    
+    p2.configure(bg="burlywood3")
+    
+    #Creates widgets 
+    #Entry 
+    
+    if editmode == False:
+        
+        wfname_entry=Entry(p2,font=font5)
+        wfname_entry.delete(0, END)
+        
+        wlname_entry=Entry(p2,font=font5)
+        wlname_entry.delete(0, END)
+        
+        wnumber_entry=Entry(p2,font=font5)
+        wnumber_entry.delete(0, END)
+        
+        waddress_entry=Entry(p2,font=font5)
+        waddress_entry.delete(0, END)
+        
+        wemail_entry=Entry(p2,font=font5)
+        wemail_entry.delete(0, END)
+        
+        
+        
+        clearbut=Button(p2,text="Clear", command = ClearEntries, bg="burlywood1", font = font3)
+        
+        saveall=Button(p2,text="Save", command = normalsave, bg="burlywood1", font = font3)     
+        
+        back=Button(p2,text="Back", command=openpage1, bg="burlywood1", font = font3)         
+        
+           
+          
+        
+        clearbut.grid(row=35, column=1) 
+        
+        emptygrid6=Label(bg="burlywood3")
+        emptygrid6.grid(row=32)        
+        
+        saveall.grid(row=31, column=1)        
+        
+        emptygrid7=Label(bg="burlywood3")
+        emptygrid7.grid(row=34)        
+        
+        
+        back.grid(row=33, column=1)        
+        emptygrid7=Label(bg="burlywood3")
+        emptygrid7.grid(row=36)         
+               
+        
+        
+    elif editmode == True:
+        wfname_entry=Entry(p2, font = font5)
+        wfname_entry.insert(0, ContactInfoFunc[ind].ContFName)
+        
+        wlname_entry=Entry(p2, font = font5)
+        wlname_entry.insert(0, ContactInfoFunc[ind].ContLName)
+       
+        wnumber_entry=Entry(p2, font = font5)
+        wnumber_entry.insert(0, ContactInfoFunc[ind].ContPhoneNumber)
+        
+        waddress_entry=Entry(p2, font = font5)
+        waddress_entry.insert(0, ContactInfoFunc[ind].ContAddress)
+        
+        wemail_entry=Entry(p2, font = font5)
+        wemail_entry.insert(0, ContactInfoFunc[ind].ContEmail)
+       
+       
+        
+        clearbut=Button(p2,text="Clear", command = ClearEntries,font=font3,bg="burlywood1")   
+        SaveEdit = Button(p2, text = "Save Edit", command = SaveEditFunc,font=font3, bg="burlywood1")     
+        Cancel=Button(p2,text="Back",command = openpage1,font=font3, bg="burlywood1")        
+        
+        clearbut.grid(row= 23, column = 1) 
+        
+        emptygrid7=Label(bg="burlywood3")
+        emptygrid7.grid(row=22)          
+        
+        SaveEdit.grid(row=21, column = 1)  
+        
+        emptygrid7=Label(bg="burlywood3")
+        emptygrid7.grid(row=24)  
+        
+        Cancel.grid(row=25, column = 1) 
+        
+        emptygrid7=Label(bg="burlywood3")
+        emptygrid7.grid(row=26)          
+        
+        delbut2=Button(p2,text="Delete", command=DelEntry, bg="burlywood1", font = font3) 
+        delbut2.grid(row=27, column=1)
+  
+    wmaintitle=Label(p2, text="Add Contact",bg="burlywood3",font=font1)
+    wfname = Label(p2,text="First name:",bg="burlywood3",font=font2)
+    wlname=Label(p2,text="Last name:" ,bg="burlywood3",font=font2)
+    wnumber =Label(p2,text="Phone Number:",bg="burlywood3",font=font2)
+    waddress =Label(p2,text="Address:",bg="burlywood3",font=font2)
+    wemail =Label(p2,text="Email Address:",bg="burlywood3",font=font2)
+          
+    #Buttons
+    edit=Button(p2,text="Reset all")        
+   
+    saveall=Button(p2,text="Save", command = getinfo,font=font4)     
+    back=Button(p2,text="Back", command=p2.destroy,font=font4)  
+    
+    #Places widgets
+    wmaintitle.grid(row=0,column=1,columnspan=1)
+    emptygrid=Label(bg="burlywood3")
+    emptygrid.grid(row=1)    
+    
+    wfname.grid(row=2,column=1, sticky="nws") 
+    wfname_entry.grid(row=3, sticky="news",column=1, columnspan=2)
+
+    emptygrid0=Label(bg="burlywood3")
+    emptygrid0.grid(row=4)
+    
+    wlname.grid(row =5, sticky="nws" ,column=1)
+    wlname_entry.grid(row= 6, sticky="news",column=1 ,columnspan=2)
+
+    emptygrid1=Label(bg="burlywood3")
+    emptygrid1.grid(row=7)
+
+    wnumber.grid(row=8,column=1, sticky="nws") 
+    wnumber_entry.grid(row=9, sticky="news",column=1 ,columnspan=2)
+
+    emptygrid2=Label(bg="burlywood3")
+    emptygrid2.grid(row=10)
+
+    waddress.grid(row=11,column=1, sticky="nws")
+    waddress_entry.grid(row=12, sticky="news",column=1 ,columnspan=2)
+
+    emptygrid3=Label(bg="burlywood3")
+    emptygrid3.grid(row=13)
+
+    wemail.grid(row=14,column=1, sticky="nws")
+    wemail_entry.grid(row=15, sticky="news",column=1 ,columnspan=2)
+
+    emptygrid4=Label(bg="burlywood3")
+    emptygrid4.grid(row=17)
+    
+   
+
+    emptygrid5=Label(bg="burlywood3")
+    emptygrid5.grid(row=20)
+
+    empty0=Label(p2,text="______",bg="burlywood3",font=font2)
+    empty0.grid(column=0,row=0, sticky="news")
+    empty1=Label(p2,text="______",bg="burlywood3",font=font2)
+    empty1.grid(column=3,row=0, sticky="news")
+    empty2=Label(p2,text="______",bg="burlywood3",font=font2)
+    empty2.grid(column=3,row=0, sticky="news")
+
+    p2.mainloop()
+
+def page3():
+    def p3close():
+        p3.destroy()
+        page1()
+    
+    def EditEntry():
+        p3.destroy()
+        global editmode
+        editmode = True
+        page2()
+    p3 = Tk()
+    p3.geometry('600x750')
+    p3.resizable(False,False)
+    p3.title("View")
+    p3.configure(bg="burlywood3")
+    
+    if ascOrder == True:
+        wfullname_entry=Label(p3,  text = sortedzipped[ind][1].FullName, font = font5, anchor='w') 
+        wnumber_entry=Label(p3,  text = sortedzipped[ind][1].ContPhoneNumber, font = font5, anchor='w')
+        waddress_entry=Label(p3,  text = sortedzipped[ind][1].ContAddress, font = font5, anchor='w')
+        wemail_entry=Label(p3,  text = sortedzipped[ind][1].ContEmail, font = font3, anchor='w')
+          
+    elif dscOrder == True:
+        print("test2")
+        wfullname_entry=Label(p3,  text = sortedzipped[ind][1].FullName, font = font5, anchor='w') 
+        wnumber_entry=Label(p3,  text = sortedzipped[ind][1].ContPhoneNumber, font = font5, anchor='w')
+        waddress_entry=Label(p3,  text = sortedzipped[ind][1].ContAddress, font = font5, anchor='w')
+        wemail_entry=Label(p3,  text = sortedzipped[ind][1].ContEmail, font = font5, anchor='w')
+               
+    else:
+        print("test1")
+        wfullname_entry=Label(p3,  text = ContactInfoFunc[ind].FullName, font = font5, anchor='w') 
+        wnumber_entry=Label(p3,  text = ContactInfoFunc[ind].ContPhoneNumber, font = font5, anchor='w')
+        waddress_entry=Label(p3,  text = ContactInfoFunc[ind].ContAddress, font = font5, anchor='w')
+        wemail_entry=Label(p3,  text = ContactInfoFunc[ind].ContEmail, font = font5, anchor='w')
+                   
+    
+    
+    #Lables
+    wmaintitle=Label(p3, text="Contacts",bg="burlywood3",font=font1)
+    wfullname = Label(p3,text="Name:",bg="burlywood3",font=font2)
+    wnumber =Label(p3,text="Phone Number:",bg="burlywood3",font=font2)
+    waddress =Label(p3,text="Address:",bg="burlywood3",font=font2)
+    wemail =Label(p3,text="Email Address:",bg="burlywood3",font=font2)
+          
+    #Buttons
+    edit=Button(p3,text="Edit", command = EditEntry,bg="burlywood1", font = font3)           
+       
+    backp3=Button(p3,text="Back", command=p3close ,bg="burlywood1",font=font3)  
+    
+    #Places widgets
+    wmaintitle.grid(row=0,column=1,columnspan=1)
+    
+    wfullname.grid(row=2,column=1, sticky="nws") 
+    wfullname_entry.grid(row=3,column=1, sticky="news", columnspan=3)
+
+    emptygrid6=Label(bg="burlywood3")
+    emptygrid6.grid(row=4)
+   
+    wnumber.grid(row=5,column=1, sticky="nws") 
+    wnumber_entry.grid(row=6,column=1 ,sticky="news", columnspan=3)
+
+    emptygrid7=Label(bg="burlywood3")
+    emptygrid7.grid(row=7)
+
+    waddress.grid(row=8,column=1, sticky="nws")
+    waddress_entry.grid(row=9,column=1, sticky="news", columnspan=3)
+
+    emptygrid8=Label(bg="burlywood3")
+    emptygrid8.grid(row=10)
+    
+    wemail.grid(row=11,column=1, sticky="nws")
+    wemail_entry.grid(row=12,column=1 ,sticky="news", columnspan=3)
+    
+    emptygrid9=Label(bg="burlywood3")
+    emptygrid9.grid(row=13)
+
+    
+
+    emptygrid10=Label(text= (""), bg="burlywood3")
+    emptygrid10.grid(row=16)
+    
+    edit.grid(row=17,column=2)
+    
+    emptygrid7=Label(bg="burlywood3")
+    emptygrid7.grid(row=18)  
+    
+     
+    
+    emptygrid7=Label(bg="burlywood3")
+    emptygrid7.grid(row=20)      
+    
+    backp3.grid(row=21,column=2) 
+    
+    emptygrid7=Label(bg="burlywood3")
+    emptygrid7.grid(row=22)  
+    
+    empty3=Label(p3,text="______",bg="burlywood3",font=font2)
+    empty3.grid(column=0,row=0, sticky="news")
+    empty4=Label(p3,text="______",bg="burlywood3",font=font2)
+    empty4.grid(column=3,row=0, sticky="news")
+    empty5=Label(p3,text="______",bg="burlywood3",font=font2)
+    empty5.grid(column=3,row=0, sticky="news")
+    
+     
+    p3.mainloop()
+    
+
+
+
+page1()
